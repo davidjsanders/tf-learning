@@ -113,11 +113,11 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   os_profile {
     computer_name_prefix = "vmlab"
     admin_username       = "azureuser"
-    admin_password       = "Passwword1234"
+    admin_password       = "Passwword1234!"
   }
 
   os_profile_linux_config {
-    disable_password_authentication = true
+    disable_password_authentication = false
 
     ssh_keys {
       path     = "/home/azureuser/.ssh/authorized_keys"
