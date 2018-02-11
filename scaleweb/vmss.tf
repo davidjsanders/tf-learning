@@ -20,7 +20,8 @@ resource "azurerm_resource_group" "vmss" {
   location = "${var.location}"
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
 
@@ -38,7 +39,8 @@ resource "azurerm_virtual_network" "vmss" {
   resource_group_name = "${azurerm_resource_group.vmss.name}"
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
 
@@ -64,7 +66,8 @@ resource "azurerm_public_ip" "vmss" {
   domain_name_label            = "${azurerm_resource_group.vmss.name}"
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
 
@@ -82,7 +85,8 @@ resource "azurerm_lb" "vmss" {
   }
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
 
@@ -242,7 +246,8 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
   }
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
 
@@ -258,7 +263,8 @@ resource "azurerm_public_ip" "jumpbox" {
   domain_name_label            = "${azurerm_resource_group.vmss.name}-ssh"
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
 
@@ -279,7 +285,8 @@ resource "azurerm_network_interface" "jumpbox" {
   }
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
 
@@ -335,6 +342,7 @@ resource "azurerm_virtual_machine" "jumpbox" {
   }
 
   tags {
-    environment = "codelab"
+    environment = "${var.environment}"
+    name = "${var.name}"
   }
 }
