@@ -1,6 +1,7 @@
 # -------------------------------------------------------------------
 #
 # Module:         ScaleWeb
+# Code set:       vmss.tf
 # Purpose:        Create a scaled webserver farm with a bastion
 #                 server to enable connection to resources via ssh.
 # Created on:     11 February 2018
@@ -27,12 +28,12 @@ resource "azurerm_resource_group" "vmss" {
 # all resources. The default name is held in variables.tf
 # and can be overridden by passing -var azurerm_virtual_network=
 #
-# Notice the CIDR block is set to a default of 10.0.0.0/16 which
+# Notice the CIDR block is set to a default of 10.0.0.0/20 which
 # is way too big.
 #
 resource "azurerm_virtual_network" "vmss" {
   name                = "vmss-vnet"
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["10.0.0.0/20"]
   location            = "${var.location}"
   resource_group_name = "${azurerm_resource_group.vmss.name}"
 
