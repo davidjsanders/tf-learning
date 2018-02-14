@@ -11,19 +11,19 @@
 # -------------------------------------------------------------------
 
 # Environment tag
-variable "environment" {
+variable "tag_environment" {
   description = "The environment tag (e.g. dev, prod, test, etc.)"
   default = "dev"
 }
 
 # Name tag
-variable "name" {
+variable "tag_name" {
   description = "The tag for identification (and billing) purposes"
   default = "vmssdemo"
 }
 
 # Location of the Azure resources
-variable "location" {
+variable "azure_location" {
   description = "The location where resources will be created"
   default     = "East US"
 }
