@@ -11,25 +11,28 @@
 #
 # -------------------------------------------------------------------
 
-# Create the virtual network which will be used to contain
-# all resources. The default name is held in variables.tf
-# and can be overridden by passing -var azurerm_virtual_network=
+# Create a load balancer and tell it to use the Public IP created
+# above.
 #
-# Notice the CIDR block is set to a default of 10.0.0.0/20 which
-# is way too big.
-#
+variable "resource_prefix" {}
 variable "location" {}
 variable "resource_group_name" {}
+variable "public_ip_id" {}
 variable "environment" {}
 variable "name" {}
-variable "cidr_block" {}
-variable "resource_prefix" {}
+variable "private_fe_config_name" {
+  default = "PublicIPAddress"
+}
 
-resource "azurerm_virtual_network" "vnet" {
-  name                = "${var.resource_prefix}-vnet"
-  address_space       = ["${var.cidr_block}"]
+resource "azurerm_lb" "lb" {
+  name                = "${var.resource_prefix}-load-balancer"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
+
+  frontend_ip_configuration {
+    name                 = "${var.private_fe_config_name}"
+    public_ip_address_id = "${var.public_ip_id}"
+  }
 
   tags {
     environment = "${var.environment}"
@@ -37,6 +40,10 @@ resource "azurerm_virtual_network" "vnet" {
   }
 }
 
-output "vnet_name" {
-  value = "${azurerm_virtual_network.vnet.name}"
+output "lb_id" {
+  value = "${azurerm_lb.lb.id}"
+}
+
+output "lb_fe_config_name" {
+  value = "${var.private_fe_config_name}"
 }

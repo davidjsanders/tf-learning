@@ -11,19 +11,19 @@
 #
 # -------------------------------------------------------------------
 
-# Create the subnet for resources (10.0.2.0/24). Typically,
-# there would be more than one subnet to segregate traffic
-# but in this example, only one is used.
+# Create a backend address pool for resources being load balanced
+# (e.g. VMs, etc.)
 #
 variable "resource_group_name" {}
-variable "subnet_cidr_block" {}
-variable "vnet_name" {}
+variable "loadbalancer_id" {}
 variable "resource_prefix" {}
 
-resource "azurerm_subnet" "vmss" {
-  name                = "${var.resource_prefix}-vnet-subnet1"
-  resource_group_name  = "${var.resource_group_name}"
-  virtual_network_name = "${var.vnet_name}"
-  address_prefix       = "${var.subnet_cidr_block}"
+resource "azurerm_lb_backend_address_pool" "bpepool" {
+  resource_group_name = "${var.resource_group_name}"
+  loadbalancer_id     = "${var.loadbalancer_id}"
+  name                = "${var.resource_prefix}BackEndAddressPool"
 }
 
+output "be_pool_id" {
+    value = "${azurerm_lb_backend_address_pool.bpepool.id}"
+}

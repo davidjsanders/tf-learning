@@ -19,9 +19,10 @@ variable "location" {}
 variable "resource_group_name" {}
 variable "environment" {}
 variable "name" {}
+variable "resource_prefix" {}
 
 resource "azurerm_public_ip" "pip" {
-  name                         = "${var.pip_name}"
+  name                         = "${var.resource_prefix}-${var.pip_name}"
   location                     = "${var.location}"
   resource_group_name          = "${var.resource_group_name}"
   public_ip_address_allocation = "static"
@@ -33,6 +34,6 @@ resource "azurerm_public_ip" "pip" {
   }
 }
 
-output "public_ip_id" {
+output "ip_id" {
   value = "${azurerm_public_ip.pip.id}"
 }

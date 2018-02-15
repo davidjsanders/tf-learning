@@ -22,6 +22,12 @@ variable "tag_name" {
   default = "vmssdemo"
 }
 
+# Resource prefix
+variable "resource_prefix" {
+  description = "The prefix to use in the name of all resources created"
+  default = "noprefix"
+}
+
 # Location of the Azure resources
 variable "azure_location" {
   description = "The location where resources will be created"
