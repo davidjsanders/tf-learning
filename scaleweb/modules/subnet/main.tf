@@ -27,3 +27,6 @@ resource "azurerm_subnet" "vmss" {
   address_prefix       = "${var.subnet_cidr_block}"
 }
 
+output "subnet_id" {
+  value = "${azurerm_subnet.vmss.id}"
+}

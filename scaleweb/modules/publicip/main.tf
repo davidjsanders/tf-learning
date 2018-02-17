@@ -20,13 +20,14 @@ variable "resource_group_name" {}
 variable "environment" {}
 variable "name" {}
 variable "resource_prefix" {}
+variable "domain_name" {}
 
 resource "azurerm_public_ip" "pip" {
-  name                         = "${var.resource_prefix}-${var.pip_name}"
+  name                         = "${var.resource_prefix}-${var.pip_name}-pip"
   location                     = "${var.location}"
   resource_group_name          = "${var.resource_group_name}"
   public_ip_address_allocation = "static"
-  domain_name_label            = "${var.resource_group_name}"
+  domain_name_label            = "${var.domain_name}"
 
   tags {
     environment = "${var.environment}"
@@ -36,4 +37,8 @@ resource "azurerm_public_ip" "pip" {
 
 output "ip_id" {
   value = "${azurerm_public_ip.pip.id}"
+}
+
+output "ip_fqdn" {
+  value = "${azurerm_public_ip.pip.fqdn}"
 }

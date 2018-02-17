@@ -42,7 +42,8 @@ module "subnet" {
 
 module "pip" {
   source = "../modules/publicip"
-  pip_name = "load_balancer_pip"
+  pip_name = "load_balancer"
+  domain_name = "web-${var.resource_group_name}"
   resource_prefix = "${var.resource_prefix}"
   resource_group_name = "${module.resource_group.resource_group_name}"
   location = "${var.azure_location}"
@@ -88,3 +89,66 @@ module "lbrule" {
   lb_name = "http"
   lb_protocol = "Tcp"
 }
+
+module "scaleset" {
+  source = "../modules/scaleset"
+  lb_rule_name = "${module.lbrule.lb_rule_name}"
+  resource_prefix = "${var.resource_prefix}"
+  resource_group_name = "${module.resource_group.resource_group_name}"
+  scaleset_name = "${var.resource_prefix}-scale-set"
+  bepool_id = "${module.bepool.be_pool_id}"
+  subnet_id = "${module.subnet.subnet_id}"
+  application_port = "${var.application_port}"
+  location = "${var.azure_location}"
+  environment = "${var.tag_environment}"
+  name = "${var.tag_name}"
+}
+
+module "jumpbox_pip" {
+  source = "../modules/publicip"
+  pip_name = "jumpbox"
+  domain_name = "jumpbox-${var.resource_group_name}"
+  resource_prefix = "${var.resource_prefix}"
+  resource_group_name = "${module.resource_group.resource_group_name}"
+  location = "${var.azure_location}"
+  environment = "${var.tag_environment}"
+  name = "${var.tag_name}"
+}
+
+module "jumpbox_net_if" {
+  source = "../modules/netifpub"
+  if_name = "jumpbox"
+  ip_public_id = "${module.jumpbox_pip.ip_id}"
+  subnet_id = "${module.subnet.subnet_id}"
+  resource_prefix = "${var.resource_prefix}"
+  resource_group_name = "${module.resource_group.resource_group_name}"
+  location = "${var.azure_location}"
+  environment = "${var.tag_environment}"
+  name = "${var.tag_name}"
+}
+
+module "jumpbox_vm" {
+  source = "../modules/jumpbox"
+  ip_id = "${module.jumpbox_net_if.netif_id}"
+  vm_name = "jumpbox"
+  vm_os_name = "jumpbox"
+  vm_size = "Standard_DS1_v2"
+  vm_disable_password_authentication = true
+  resource_prefix = "${var.resource_prefix}"
+  resource_group_name = "${module.resource_group.resource_group_name}"
+  location = "${var.azure_location}"
+  environment = "${var.tag_environment}"
+  name = "${var.tag_name}"
+}
+
+# The public ip assigned to the VM Scale Set
+output "vmss_public_ip" {
+    value = "${module.pip.ip_fqdn}"
+}
+
+# The public ip assigned to the jumpbox (or bastion)
+output "jumpbox_public_ip" {
+    value = "${module.jumpbox_pip.ip_fqdn}"
+}
+
+output "vm_username" { value = "${module.jumpbox_vm.vm_username}" }

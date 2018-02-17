@@ -37,3 +37,7 @@ resource "azurerm_lb_rule" "lbnatrule" {
     frontend_ip_configuration_name = "${var.lb_fe_config_name}"
     probe_id                       = "${var.lb_probe_id}"
 }
+
+output "lb_rule_name" {
+    value = "${azurerm_lb_rule.lbnatrule.name}"
+}
