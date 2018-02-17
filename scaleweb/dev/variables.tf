@@ -1,9 +1,10 @@
 # -------------------------------------------------------------------
 #
 # Module:         ScaleWeb
+# Submodule:      dev
 # Code set:       variables.tf
-# Purpose:        Define the variables used in the terraform.
-# Created on:     11 February 2018
+# Purpose:        Define the variables used in the dev environment.
+# Created on:     18 February 2018
 # Created by:     David Sanders
 # Creator email:  dsanderscanada@gmail.com 
 # Repository:     https://github.com/dsandersAzure/tf-learning

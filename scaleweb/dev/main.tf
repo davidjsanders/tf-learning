@@ -1,10 +1,13 @@
 # -------------------------------------------------------------------
 #
 # Module:         ScaleWeb
+# Submodule:      dev
 # Code set:       main.tf
-# Purpose:        Initialize terraform to use azure resource manager
-#                 provider
-# Created on:     11 February 2018
+# Purpose:        Deploy the ScaleWeb example to a dev environment.
+#                 The dev environment is scaled to specific resources
+#                 and sizes required for devs and cannot be exceeded
+#                 (e.g. by specifying larger machine sizes or counts)
+# Created on:     17 February 2018
 # Created by:     David Sanders
 # Creator email:  dsanderscanada@gmail.com 
 # Repository:     https://github.com/dsandersAzure/tf-learning
