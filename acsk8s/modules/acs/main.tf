@@ -42,9 +42,11 @@ resource "azurerm_container_service" "container_service" {
 }
 
 output "master_fqdn" {
-  value = "${azurerm_container_service.container_service.master_profile.fqdn}"
+  value = "tbc"
+#  value = "${azurerm_container_service.container_service.master_profile.fqdn}"
 }
 
 output "ssh_command_master" {
-  value = "ssh ${var.linux_user}@${azurerm_container_service.container_service.master_profile.fqdn} -A -p 22"
+  value = "tbc"
+#  value = "ssh ${var.linux_user}@${azurerm_container_service.container_service.master_profile.fqdn} -A -p 22"
 }

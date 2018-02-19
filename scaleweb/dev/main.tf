@@ -143,15 +143,3 @@ module "jumpbox_vm" {
   environment = "${var.tag_environment}"
   name = "${var.tag_name}"
 }
-
-# The public ip assigned to the VM Scale Set
-output "vmss_public_ip" {
-    value = "${module.pip.ip_fqdn}"
-}
-
-# The public ip assigned to the jumpbox (or bastion)
-output "jumpbox_public_ip" {
-    value = "${module.jumpbox_pip.ip_fqdn}"
-}
-
-output "vm_username" { value = "${module.jumpbox_vm.vm_username}" }

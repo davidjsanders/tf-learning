@@ -35,4 +35,8 @@ module "acs_svc" {
     resource_prefix = "${var.resource_prefix}"
     service_principal_client_id = "${var.service_principal_client_id}"
     service_principal_client_secret = "${var.service_principal_client_secret}"
+    agent_sku = "${var.agent_sku}"
+    master_count = "${var.master_count}"
+    agent_count = "${var.agent_count}"
+    linux_user = "${var.linux_user}"
 }
