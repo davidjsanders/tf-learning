@@ -54,3 +54,8 @@ variable "admin_password" {
     description = "Default password for admin"
     default = "Password1234!"
 }
+
+variable "custom_data_filename" {
+  description = "A custom data command set to be executed for every scaleset instance"
+  default = "custom_data.txt"
+}

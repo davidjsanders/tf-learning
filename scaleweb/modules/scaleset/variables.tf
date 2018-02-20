@@ -33,6 +33,7 @@ variable "instance_name_prefix" {
     default = "dev"
 }
 
+variable "custom_data_filename" {}
 variable "lb_rule_name" {}
 variable "application_port" {}
 variable "bepool_id" {}

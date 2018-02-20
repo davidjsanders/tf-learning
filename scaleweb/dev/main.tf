@@ -95,6 +95,7 @@ module "lbrule" {
 
 module "scaleset" {
   source = "../modules/scaleset"
+  custom_data_filename = "${var.custom_data_filename}"
   lb_rule_name = "${module.lbrule.lb_rule_name}"
   resource_prefix = "${var.resource_prefix}"
   resource_group_name = "${module.resource_group.resource_group_name}"

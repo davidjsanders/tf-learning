@@ -78,6 +78,8 @@ resource "azurerm_virtual_machine_scale_set" "vmss" {
     # In production scenarios, this is more likely to install Chef,
     # puppet, etc., agents.
     #
+#    custom_data = "${file("${var.custom_data_filename}")}"
+
     custom_data = <<-EOF
       #!/bin/bash
       echo "Response from: $HOSTNAME" > index.html
