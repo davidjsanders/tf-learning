@@ -21,7 +21,7 @@ resource "google_container_cluster" "primary" {
   name = "${var.cluster_name}"
 #  zone = "${data.google_compute_zones.available.names[0]}"
   zone = "us-east1-b"
-  initial_node_count = 3
+  initial_node_count = 5
 
 #  node_version = "${var.kubernetes_version}"
 
