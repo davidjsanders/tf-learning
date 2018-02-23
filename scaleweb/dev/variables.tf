@@ -59,3 +59,8 @@ variable "custom_data_filename" {
   description = "A custom data command set to be executed for every scaleset instance"
   default = "custom_data.txt"
 }
+
+variable "vmss_instances" {
+  description = "The number of instances in the VM Scale Set"
+  default = 2
+}
