@@ -106,7 +106,8 @@ module "scaleset" {
   location = "${var.azure_location}"
   environment = "${var.tag_environment}"
   name = "${var.tag_name}"
-  sku_qty = "${var.vmss_instances}"
+  sku_qty = "2"
+# sku_qty = "3"
 }
 
 module "jumpbox_pip" {
