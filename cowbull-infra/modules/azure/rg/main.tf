@@ -16,6 +16,7 @@ variable "resource_group_name" { }
 variable "location" { default = "eastus" }
 variable "tag_description" { default = "Azure Kubernetes Services (AKS) Cluster" }
 variable "tag_environment" { default = "unknown" }
+variable "tag_billing" {}
 
 # Create a resource group
 resource "azurerm_resource_group" "resource_group" {
@@ -26,6 +27,7 @@ resource "azurerm_resource_group" "resource_group" {
     description = "${var.tag_description}"
     environment = "${var.tag_environment}"
     prefix = "${var.resource_prefix}"
+    billing = "${var.tag_billing}"
   }
 }
 

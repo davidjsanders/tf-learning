@@ -28,6 +28,7 @@ variable "resource_group_name" {}
 variable "location" {}
 variable "tag_description" {}
 variable "tag_environment" {}
+variable "tag_billing" {}
 
 resource "azurerm_kubernetes_cluster" "aks" {
   name                   = "${var.cluster_name}"
@@ -45,7 +46,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
   }
 
   agent_pool_profile {
-    name            = "${var.resource_prefix}${var.agent_pool_name}"
+    name            = "${var.agent_pool_name}"
     count           = "${var.agent_pool_count}"
     vm_size         = "${var.agent_pool_vm_size}"
     os_type         = "${var.agent_pool_os_type}"
@@ -60,6 +61,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
     description = "${var.tag_description}"
     environment = "${var.tag_environment}"
     prefix = "${var.resource_prefix}"
+    billing = "${var.tag_billing}"
   }
 }
 
