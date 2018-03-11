@@ -3,6 +3,7 @@
 *.tfstate.backup
 *.terraform.*
 *.tfvars
+*.txt
 
 # Module directory
 .terraform/

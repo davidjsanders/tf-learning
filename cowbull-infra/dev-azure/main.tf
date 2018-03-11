@@ -20,6 +20,7 @@ variable "resource_group_name" { }
 variable "location" { default = "eastus" }
 variable "tag_description" { default = "Azure Kubernetes Services (AKS) Cluster" }
 variable "tag_environment" { default = "unknown" }
+variable "tag_billing" {}
 
 # AKS cluster variables
 variable "cluster_name" { default = "aks-cluster" }
@@ -30,7 +31,6 @@ variable "linux_user" { default = "aksuser" }
 variable "agent_pool_name" { default = "pool" }
 variable "sp_client_id" {}
 variable "sp_client_secret" {}
-variable "tag_billing" {}
 
 # Configure the resource group
 module "resource_group" {
@@ -54,7 +54,7 @@ module "aks" {
     linux_user = "dev-cowbull"
     linux_user_key = "${file("~/.ssh/id_rsa.pub")}"
     agent_pool_name = "dev${var.resource_prefix}"
-    agent_pool_vm_size = "Standard_D2_v2"
+    agent_pool_vm_size = "Standard_D1_v2"
     agent_pool_os_type = "Linux"
     agent_pool_count = "3"
     sp_client_id = "${var.sp_client_id}"

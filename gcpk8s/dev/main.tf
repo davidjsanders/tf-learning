@@ -1,9 +1,9 @@
 variable "region" {}
+variable "project" {}
 
 provider "google" {
-  project = "tf-k8s-demo"
+  project = "${var.project}"
   region = "${var.region}"
-  // Provider settings to be provided via ENV variables
 }
 
 data "google_compute_zones" "available" {}
@@ -12,7 +12,7 @@ variable "cluster_name" {
   default = "terraform-example-cluster"
 }
 variable "kubernetes_version" {
-  default = "1.6.7"
+  default = "1.8.8"
 }
 variable "username" {}
 variable "password" {}
@@ -42,6 +42,10 @@ resource "google_container_cluster" "primary" {
       "https://www.googleapis.com/auth/monitoring"
     ]
   }
+}
+
+output "cluster_credentials" {
+  value = "gcloud container clusters get-credentials ${var.cluster_name} --project ${var.project} --zone ${var.region}"
 }
 
 output "cluster_name" {
