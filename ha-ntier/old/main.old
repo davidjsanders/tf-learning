@@ -1,0 +1,98 @@
+provider "azurerm" {}
+
+variable "regions" {
+    type = "list"
+    default = ["eastus2", "eastus", "westus"]
+}
+
+resource "azurerm_resource_group" "resource_group" {
+    count = 3
+    name     = "rg${count.index}--${var.org_tla}-${var.stage}-rg-${var.app_name}"
+    location = "${element(var.regions, count.index)}"
+
+    tags {
+        location = "${element(var.regions, count.index)}"
+        description = "${var.description}"
+        environment = "${var.stage}"
+        organization = "${var.org_tla}"
+        billing = "${var.billing_code}"
+    }
+}
+
+module "mgt_rg" {
+    source = "../modules/rg"
+
+    name = "${var.app_name}"
+    pri_sec = "mgt"
+    location  = "${var.mgt_region}"
+    org_tla = "${var.org_tla}"
+    stage = "${var.stage}"
+    description = "${var.description}"
+    billing_code = "${var.billing_code}"
+}
+
+module "pri_rg" {
+    source = "../modules/rg"
+
+    name = "${var.app_name}"
+    pri_sec = "pri"
+    location  = "${var.pri_region}"
+    org_tla = "${var.org_tla}"
+    stage = "${var.stage}"
+    description = "${var.description}"
+    billing_code = "${var.billing_code}"
+}
+
+module "sec_rg" {
+    source = "../modules/rg"
+
+    name = "${var.app_name}"
+    pri_sec = "sec"
+    location  = "${var.sec_region}"
+    org_tla = "${var.org_tla}"
+    stage = "${var.stage}"
+    description = "${var.description}"
+    billing_code = "${var.billing_code}"
+}
+
+module "mgt_vnet" {
+    source = "../modules/vnet"
+
+    pri_sec = "mgt"
+    vnet_name = "${var.app_name}"
+    cidr_block = "${var.mgt_cidr_block}"
+    rg_name = "${module.mgt_rg.rg_name}"
+    location  = "${var.mgt_region}"
+    org_tla = "${var.org_tla}"
+    stage = "${var.stage}"
+    description = "${var.description}"
+    billing_code = "${var.billing_code}"
+}
+
+module "pri_vnet" {
+    source = "../modules/vnet"
+
+    pri_sec = "pri"
+    vnet_name = "${var.app_name}"
+    cidr_block = "${var.pri_cidr_block}"
+    rg_name = "${module.pri_rg.rg_name}"
+    location  = "${var.pri_region}"
+    org_tla = "${var.org_tla}"
+    stage = "${var.stage}"
+    description = "${var.description}"
+    billing_code = "${var.billing_code}"
+}
+
+module "sec_vnet" {
+    source = "../modules/vnet"
+
+    pri_sec = "sec"
+    vnet_name = "${var.app_name}"
+    cidr_block = "${var.sec_cidr_block}"
+    rg_name = "${module.sec_rg.rg_name}"
+    location  = "${var.sec_region}"
+    org_tla = "${var.org_tla}"
+    stage = "${var.stage}"
+    description = "${var.description}"
+    billing_code = "${var.billing_code}"
+}
