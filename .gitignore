@@ -4,6 +4,7 @@
 *.terraform.*
 *.tfvars
 *.txt
+*.json
 
 # Module directory
 .terraform/
