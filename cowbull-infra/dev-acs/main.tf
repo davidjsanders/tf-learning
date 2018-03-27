@@ -28,7 +28,10 @@ variable "kubernetes_version" { default = "1.8.2" }
 variable "dns_prefix" { default = "nodnsprefixprovided" }
 variable "linux_user" { default = "aksuser" }
 #variable "linux_user_key" {}
+variable "master_pool_count" { default = "1" }
 variable "agent_pool_name" { default = "pool" }
+variable "agent_pool_vm_size" { default = "Standard_D2_v2" }
+variable "agent_pool_count" { default = "3" }
 variable "sp_client_id" {}
 variable "sp_client_secret" {}
 
@@ -53,10 +56,10 @@ module "acs" {
     dns_prefix = "dev-${var.resource_prefix}-cluster"
     linux_user = "dev-cowbull"
     linux_user_key = "${file("~/.ssh/id_rsa.pub")}"
+    master_pool_count = "${var.master_pool_count}"
     agent_pool_name = "dev${var.resource_prefix}"
-    agent_pool_vm_size = "Standard_D2_v2"
-    agent_pool_os_type = "Linux"
-    agent_pool_count = "3"
+    agent_pool_vm_size = "${var.agent_pool_vm_size}"
+    agent_pool_count = "${var.agent_pool_count}"
     sp_client_id = "${var.sp_client_id}"
     sp_client_secret = "${var.sp_client_secret}"
 

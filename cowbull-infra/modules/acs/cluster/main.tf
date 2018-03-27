@@ -16,10 +16,10 @@ variable "kubernetes_version" {}
 variable "dns_prefix" {}
 variable "linux_user" {}
 variable "linux_user_key" {}
+variable "master_pool_count" {}
 variable "agent_pool_name" {}
 variable "agent_pool_count" {}
 variable "agent_pool_vm_size" {}
-variable "agent_pool_os_type" {}
 variable "sp_client_id" {}
 variable "sp_client_secret" {}
 
@@ -37,7 +37,7 @@ resource "azurerm_container_service" "acs" {
   orchestration_platform = "Kubernetes"
 
   master_profile {
-    count      = 1
+    count      = "${var.master_pool_count}"
     dns_prefix = "cowbull-master"
   }
 
