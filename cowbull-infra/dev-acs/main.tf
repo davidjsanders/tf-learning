@@ -45,8 +45,8 @@ module "resource_group" {
 }
 
 # Create the AKS service
-module "aks" {
-    source = "../modules/azure/cluster"
+module "acs" {
+    source = "../modules/acs/cluster"
 
     cluster_name = "dev-${var.resource_prefix}-cowbull-cluster"
     kubernetes_version = "${var.kubernetes_version}"
@@ -54,7 +54,7 @@ module "aks" {
     linux_user = "dev-cowbull"
     linux_user_key = "${file("~/.ssh/id_rsa.pub")}"
     agent_pool_name = "dev${var.resource_prefix}"
-    agent_pool_vm_size = "Standard_D1_v2"
+    agent_pool_vm_size = "Standard_D2_v2"
     agent_pool_os_type = "Linux"
     agent_pool_count = "3"
     sp_client_id = "${var.sp_client_id}"
@@ -77,5 +77,5 @@ output "resource_group_id" {
 }
 
 output "credentials" {
-    value = "${module.aks.credentials}"
+    value = "${module.acs.credentials}"
 }
