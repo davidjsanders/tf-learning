@@ -50,10 +50,10 @@ resource "azurerm_container_service" "acs" {
   }
 
   agent_pool_profile {
-    name            = "${var.agent_pool_name}"
-    count           = "${var.agent_pool_count}"
-    vm_size         = "${var.agent_pool_vm_size}"
-    dns_prefix      = "cowbull-agent"
+    name       = "${var.agent_pool_name}"
+    count      = "${var.agent_pool_count}"
+    vm_size    = "${var.agent_pool_vm_size}"
+    dns_prefix = "cowbull-agent"
   }
 
   service_principal {
@@ -68,11 +68,11 @@ resource "azurerm_container_service" "acs" {
   tags {
     description = "${var.tag_description}"
     environment = "${var.tag_environment}"
-    prefix = "${var.resource_prefix}"
-    billing = "${var.tag_billing}"
+    prefix      = "${var.resource_prefix}"
+    billing     = "${var.tag_billing}"
   }
 }
 
 output "credentials" {
-    value = "az aks get-credentials -g ${var.resource_group_name} -n ${var.cluster_name}"
+  value = "az acs kubernetes get-credentials -g ${var.resource_group_name} -n ${var.cluster_name}"
 }
