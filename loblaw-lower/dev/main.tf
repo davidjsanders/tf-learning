@@ -22,10 +22,27 @@ variable "cidr_block" {
   default = "10.0.0.0/24"
 }
 
-variable "dc_cidr_block" {}
-variable "int_cidr_block" {}
-variable "svc_cidr_block" {}
-variable "gateway_cidr_block" {}
+variable "subnet_names" {
+  type = "list"
+}
+
+variable "cidr_blocks" {
+  type = "list"
+}
+
+variable "nsg_names" {
+  type = "list"
+}
+
+variable "ssh_enable_subnet" {
+  default = "2"
+}
+
+# variable "dc_cidr_block" {}
+
+# variable "int_cidr_block" {}
+# variable "svc_cidr_block" {}
+# variable "gateway_cidr_block" {}
 
 variable "tag_description" {}
 
@@ -56,10 +73,42 @@ module "virtual_network" {
   tag_billing     = "${var.tag_billing}"
 }
 
-module "dc_subnet_nsg" {
+module "nsgs" {
   source = "../modules/nsg"
 
-  nsg_name            = "lcl-shared-dc-subnet-nsg"
+  resource_group_name = "${module.resource_group.resource_group_name}"
+  location            = "${var.location}"
+  nsg_names           = "${var.nsg_names}"
+  tag_description     = "${var.tag_description}"
+  tag_environment     = "${var.tag_environment}"
+  tag_billing         = "${var.tag_billing}"
+}
+
+module "gateway_subnet_nsg_allow_ssh" {
+  source = "../modules/nsg_rule"
+
+  resource_group_name    = "${module.resource_group.resource_group_name}"
+  nsg_name               = "${element(module.nsgs.nsg_names, var.ssh_enable_subnet)}"
+  rule_name              = "allow_gateway_ssh"
+  priority               = "1000"
+  direction              = "Inbound"
+  destination_port_range = "22"
+}
+
+module "subnets" {
+  source = "../modules/subnet"
+
+  resource_group_name = "${module.resource_group.resource_group_name}"
+  vnet_name           = "${module.virtual_network.vnet_name}"
+  subnet_names        = "${var.subnet_names}"
+  cidr_blocks         = "${var.cidr_blocks}"
+}
+
+module "linux_jump_pip" {
+  source = "../modules/publicip"
+
+  pip_name            = "linux_jump_pip"
+  domain_name         = "lcl-dv-green"
   resource_group_name = "${module.resource_group.resource_group_name}"
   location            = "${var.location}"
 
@@ -68,80 +117,31 @@ module "dc_subnet_nsg" {
   tag_billing     = "${var.tag_billing}"
 }
 
-module "svc_subnet_nsg" {
-  source = "../modules/nsg"
+module "linux_jump_nic" {
+  source = "../modules/nic"
 
-  nsg_name            = "lcl-shared-svc-subnet-nsg"
-  resource_group_name = "${module.resource_group.resource_group_name}"
-  location            = "${var.location}"
-
-  tag_description = "${var.tag_description}"
-  tag_environment = "${var.tag_environment}"
-  tag_billing     = "${var.tag_billing}"
-}
-
-module "int_subnet_nsg" {
-  source = "../modules/nsg"
-
-  nsg_name            = "lcl-shared-inet-subnet-nsg"
-  resource_group_name = "${module.resource_group.resource_group_name}"
-  location            = "${var.location}"
+  subnet_id            = "${element(module.subnets.subnet_id_list, 2)}"
+  resource_group_name  = "${module.resource_group.resource_group_name}"
+  location             = "${var.location}"
+  public_ip_address_id = "${module.linux_jump_pip.ip_id}"
 
   tag_description = "${var.tag_description}"
   tag_environment = "${var.tag_environment}"
   tag_billing     = "${var.tag_billing}"
 }
 
-module "gateway_subnet_nsg" {
-  source = "../modules/nsg"
+module "linux_jump" {
+  source = "../modules/ubuntu-vm"
 
-  nsg_name            = "lcl-shared-gateway-subnet-nsg"
+  vm_name             = "linux_jumpbox"
+  vm_os_name          = "linux-jumpbox"
+  nic_id              = "${module.linux_jump_nic.id}"
   resource_group_name = "${module.resource_group.resource_group_name}"
   location            = "${var.location}"
 
   tag_description = "${var.tag_description}"
   tag_environment = "${var.tag_environment}"
   tag_billing     = "${var.tag_billing}"
-}
-
-module "dc_subnet" {
-  source = "../modules/subnet"
-
-  subnet_name         = "lcl-green-dc-subnet"
-  subnet_cidr_block   = "${var.dc_cidr_block}"
-  vnet_name           = "${module.virtual_network.vnet_name}"
-  nsg_id              = "${module.dc_subnet_nsg.nsg_id}"
-  resource_group_name = "${module.resource_group.resource_group_name}"
-}
-
-module "int_subnet" {
-  source = "../modules/subnet"
-
-  subnet_name         = "lcl-green-int-subnet"
-  subnet_cidr_block   = "${var.int_cidr_block}"
-  vnet_name           = "${module.virtual_network.vnet_name}"
-  nsg_id              = "${module.int_subnet_nsg.nsg_id}"
-  resource_group_name = "${module.resource_group.resource_group_name}"
-}
-
-module "svc_subnet" {
-  source = "../modules/subnet"
-
-  subnet_name         = "lcl-green-svc-subnet"
-  subnet_cidr_block   = "${var.svc_cidr_block}"
-  vnet_name           = "${module.virtual_network.vnet_name}"
-  nsg_id              = "${module.svc_subnet_nsg.nsg_id}"
-  resource_group_name = "${module.resource_group.resource_group_name}"
-}
-
-module "gateway_subnet" {
-  source = "../modules/subnet"
-
-  subnet_name         = "lcl-green-gateway-subnet"
-  subnet_cidr_block   = "${var.gateway_cidr_block}"
-  vnet_name           = "${module.virtual_network.vnet_name}"
-  nsg_id              = "${module.gateway_subnet_nsg.nsg_id}"
-  resource_group_name = "${module.resource_group.resource_group_name}"
 }
 
 output "resource_group_name" {
@@ -150,4 +150,8 @@ output "resource_group_name" {
 
 output "resource_group_id" {
   value = "${module.resource_group.resource_group_id}"
+}
+
+output "jumpbox_ssh" {
+  value = "ssh -A azureuser@${module.linux_jump_pip.ip_fqdn}"
 }

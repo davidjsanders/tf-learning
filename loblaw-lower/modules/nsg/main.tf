@@ -15,7 +15,9 @@ variable "resource_group_name" {}
 
 variable "location" {}
 
-variable "nsg_name" {}
+variable "nsg_names" {
+  type = "list"
+}
 
 variable "tag_description" {
   default = "Azure Kubernetes Services (AKS) Cluster"
@@ -27,22 +29,11 @@ variable "tag_environment" {
 
 variable "tag_billing" {}
 
-resource "azurerm_network_security_group" "app-nsg" {
-  name                = "${var.nsg_name}"
+resource "azurerm_network_security_group" "nsg_list" {
+  count               = "${length(var.nsg_names)}"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
-
-  security_rule {
-    name                       = "test123"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "10.3.0.0/26"
-    destination_address_prefix = "*"
-  }
+  name                = "${element(var.nsg_names, count.index)}"
 
   tags {
     description = "${var.tag_description}"
@@ -51,10 +42,10 @@ resource "azurerm_network_security_group" "app-nsg" {
   }
 }
 
-output "nsg_id" {
-  value = "${azurerm_network_security_group.app-nsg.id}"
+output "nsg_ids" {
+  value = ["${azurerm_network_security_group.nsg_list.*.id}"]
 }
 
-output "nsg_name" {
-  value = "${azurerm_network_security_group.app-nsg.name}"
+output "nsg_names" {
+  value = ["${azurerm_network_security_group.nsg_list.*.name}"]
 }

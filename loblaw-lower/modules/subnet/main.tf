@@ -11,21 +11,28 @@
 #
 # -------------------------------------------------------------------
 
-variable "resource_group_name" {}
-
-variable "subnet_cidr_block" {}
-variable "vnet_name" {}
-variable "nsg_id" {}
-variable "subnet_name" {}
-
-resource "azurerm_subnet" "vmss" {
-  name                      = "${var.subnet_name}"
-  resource_group_name       = "${var.resource_group_name}"
-  virtual_network_name      = "${var.vnet_name}"
-  address_prefix            = "${var.subnet_cidr_block}"
-  network_security_group_id = "${var.nsg_id}"
+variable "subnet_names" {
+  type = "list"
 }
 
-output "subnet_id" {
-  value = "${azurerm_subnet.vmss.id}"
+variable "cidr_blocks" {
+  type = "list"
+}
+
+variable "resource_group_name" {}
+
+variable "vnet_name" {}
+
+resource "azurerm_subnet" "subnets" {
+  count                = "${length(var.subnet_names)}"
+  name                 = "${element(var.subnet_names, count.index)}"
+  resource_group_name  = "${var.resource_group_name}"
+  virtual_network_name = "${var.vnet_name}"
+  address_prefix       = "${element(var.cidr_blocks, count.index)}"
+
+  #  network_security_group_id = "${var.nsg_id}"
+}
+
+output "subnet_id_list" {
+  value = ["${azurerm_subnet.subnets.*.id}"]
 }
