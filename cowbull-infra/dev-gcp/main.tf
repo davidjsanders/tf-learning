@@ -9,7 +9,11 @@ variable "cluster_name" {
 
 variable "region" {}
 variable "zone" {}
-variable "kubernetes_version" {}
+
+variable "kubernetes_version" {
+  default = ""
+}
+
 variable "username" {}
 variable "password" {}
 variable "billing_account" {}
@@ -24,19 +28,18 @@ module "project" {
 
   project_name    = "${var.project_name}"
   billing_account = "${var.billing_account}"
-  org_id          = "${var.org_id}"
+  org_id          = ""
 }
 
 module "cluster" {
   source = "../modules/google/cluster"
 
-  project_id         = "${module.project.project_id}"
-  region             = "${var.region}"
-  zone               = "${var.zone}"
-  cluster_name       = "${var.cluster_name}"
-  kubernetes_version = "${var.kubernetes_version}"
-  username           = "${var.username}"
-  password           = "${var.password}"
+  project_id   = "${module.project.project_id}"
+  region       = "${var.region}"
+  zone         = "${var.zone}"
+  cluster_name = "${var.cluster_name}"
+  username     = "${var.username}"
+  password     = "${var.password}"
 }
 
 output "project_id" {

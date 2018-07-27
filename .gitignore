@@ -1,3 +1,10 @@
+#  Local .terraform directories
+**/.terraform/*
+**/*.secret
+**/*-run
+**/.DS_Store
+**/*.json
+
 # Compiled files
 *.tfstate
 *.tfstate.backup

@@ -13,30 +13,30 @@
 # -------------------------------------------------------------------
 
 # Configure the Azure Provider
-provider "azurerm" { }
+provider "azurerm" {}
 
 module "acs_rg" {
-    source = "../modules/rg"
-    tag_environment = "${var.tag_environment}"
-    tag_description = "${var.tag_description}"
-    tag_orchestrator = "${var.tag_orchestrator}"
-    resource_group_name = "${var.resource_group_name}"
-    location = "${var.location}"
-    resource_prefix = "${var.resource_prefix}"
+  source              = "../modules/rg"
+  tag_environment     = "${var.tag_environment}"
+  tag_description     = "${var.tag_description}"
+  tag_orchestrator    = "${var.tag_orchestrator}"
+  resource_group_name = "${var.resource_group_name}"
+  location            = "${var.location}"
+  resource_prefix     = "${var.resource_prefix}"
 }
 
 module "acs_svc" {
-    source = "../modules/acs"
-    tag_environment = "${var.tag_environment}"
-    tag_description = "${var.tag_description}"
-    tag_orchestrator = "${var.tag_orchestrator}"
-    resource_group_name = "${module.acs_rg.name}"
-    location = "${var.location}"
-    resource_prefix = "${var.resource_prefix}"
-    service_principal_client_id = "${var.service_principal_client_id}"
-    service_principal_client_secret = "${var.service_principal_client_secret}"
-    agent_sku = "${var.agent_sku}"
-    master_count = "${var.master_count}"
-    agent_count = "${var.agent_count}"
-    linux_user = "${var.linux_user}"
+  source                          = "../modules/acs"
+  tag_environment                 = "${var.tag_environment}"
+  tag_description                 = "${var.tag_description}"
+  tag_orchestrator                = "${var.tag_orchestrator}"
+  resource_group_name             = "${module.acs_rg.name}"
+  location                        = "${var.location}"
+  resource_prefix                 = "${var.resource_prefix}"
+  service_principal_client_id     = "${var.client_id}"
+  service_principal_client_secret = "${var.client_secret}"
+  agent_sku                       = "${var.agent_sku}"
+  master_count                    = "${var.master_count}"
+  agent_count                     = "${var.agent_count}"
+  linux_user                      = "${var.linux_user}"
 }
